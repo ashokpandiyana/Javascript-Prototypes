@@ -99,3 +99,158 @@ Array.prototype.mySort = function (compareFn) {
   }
   return this;
 };
+
+Array.prototype.myIncludes = function (searchElement, fromIndex = 0) {
+  const length = this.length;
+  for (let i = fromIndex; i < length; i++) {
+    if (this[i] === searchElement) {
+      return true;
+    }
+  }
+  return false;
+};
+
+Array.prototype.myIndexOf = function (searchElement, fromIndex = 0) {
+  const length = this.length;
+  for (let i = fromIndex; i < length; i++) {
+    if (this[i] === searchElement) {
+      return i;
+    }
+  }
+  return -1;
+};
+
+Array.prototype.myLastIndexOf = function (
+  searchElement,
+  fromIndex = this.length - 1
+) {
+  for (let i = fromIndex; i >= 0; i--) {
+    if (this[i] === searchElement) {
+      return i;
+    }
+  }
+  return -1;
+};
+
+Array.prototype.mySlice = function (start = 0, end = this.length) {
+  const result = [];
+  let startIndex = start < 0 ? Math.max(this.length + start, 0) : start;
+  let endIndex = end < 0 ? Math.max(this.length + end, 0) : end;
+
+  for (let i = startIndex; i < endIndex && i < this.length; i++) {
+    result.push(this[i]);
+  }
+
+  return result;
+};
+
+Array.prototype.mySplice = function (start, deleteCount, ...items) {
+  const length = this.length;
+  let startIndex = start < 0 ? Math.max(length + start, 0) : start;
+  let delCount = deleteCount === undefined ? length - startIndex : deleteCount;
+
+  const removed = [];
+  for (let i = startIndex; i < startIndex + delCount && i < length; i++) {
+    removed.push(this[i]);
+  }
+
+  if (items.length < delCount) {
+    for (let i = startIndex; i < length - delCount; i++) {
+      this[i] = this[i + delCount - items.length];
+    }
+    this.length -= delCount - items.length;
+  } else if (items.length > delCount) {
+    for (let i = length - 1; i >= startIndex; i--) {
+      this[i + items.length - delCount] = this[i];
+    }
+    this.length += items.length - delCount;
+  }
+
+  for (let i = 0; i < items.length; i++) {
+    this[startIndex + i] = items[i];
+  }
+
+  return removed;
+};
+
+Array.prototype.myConcat = function (...args) {
+  const result = [...this];
+  for (let arg of args) {
+    if (Array.isArray(arg)) {
+      result.push(...arg);
+    } else {
+      result.push(arg);
+    }
+  }
+  return result;
+};
+
+Array.prototype.myFlat = function (depth = 1) {
+  const result = [];
+
+  function flatten(arr, currentDepth) {
+    for (let item of arr) {
+      if (Array.isArray(item) && currentDepth > 0) {
+        flatten(item, currentDepth - 1);
+      } else {
+        result.push(item);
+      }
+    }
+  }
+
+  flatten(this, depth);
+  return result;
+};
+
+Array.prototype.myFlatMap = function (callback) {
+  return this.map(callback).myFlat(1);
+};
+
+Array.prototype.myFill = function (value, start = 0, end = this.length) {
+  const length = this.length;
+  let startIndex = start < 0 ? Math.max(length + start, 0) : start;
+  let endIndex = end < 0 ? Math.max(length + end, 0) : end;
+
+  for (let i = startIndex; i < endIndex; i++) {
+    this[i] = value;
+  }
+
+  return this;
+};
+
+Array.prototype.myReverse = function () {
+  const length = this.length;
+  for (let i = 0; i < Math.floor(length / 2); i++) {
+    [this[i], this[length - i - 1]] = [this[length - i - 1], this[i]];
+  }
+  return this;
+};
+
+Array.prototype.myJoin = function (separator = ",") {
+  let result = "";
+  for (let i = 0; i < this.length; i++) {
+    result += this[i];
+    if (i < this.length - 1) {
+      result += separator;
+    }
+  }
+  return result;
+};
+
+Array.prototype.myFindLast = function (callback) {
+  for (let i = this.length - 1; i >= 0; i--) {
+    if (callback(this[i], i, this)) {
+      return this[i];
+    }
+  }
+  return undefined;
+};
+
+Array.prototype.myFindLastIndex = function (callback) {
+  for (let i = this.length - 1; i >= 0; i--) {
+    if (callback(this[i], i, this)) {
+      return i;
+    }
+  }
+  return -1;
+};
